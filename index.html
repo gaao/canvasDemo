@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <canvas id="star" width="200" height="200"></canvas>
+  <canvas id="rectangle" width="100" height="100"></canvas>
+  <canvas id="circle" width="125" height="200"></canvas>
+  <script>
+    const canvasStar = document.querySelector("#star");
+    const canvasRectangle = document.querySelector("#rectangle");
+    const canvasCircle = document.querySelector("#circle");
+    // 矩形
+    if (canvasRectangle.getContext) {
+      var ctx1 = canvasRectangle.getContext('2d');
+      ctx1.fillRect(0, 0, 100, 100);
+    }
+
+    // 圆
+    if (canvasCircle.getContext) {
+      var ctx2 = canvasCircle.getContext('2d');
+      ctx2.beginPath();
+      // ctx.moveTo(110, 75);
+      ctx2.arc(75, 75, 50, 0, Math.PI * 2, true); // 绘制
+      // ctx2.stroke();
+      ctx2.fillStyle = "#f00";
+      ctx2.fill();
+    }
+
+    // 五角星
+    const ctx = canvasStar.getContext("2d");
+    // 角度转化成弧度
+    const getRadianFromAngle = (angle) => (Math.PI / 180) * angle;
+    // 封装下 cos  sin
+    const cos = (angle) => Math.cos(getRadianFromAngle(angle));
+    const sin = (angle) => Math.sin(getRadianFromAngle(angle));
+    function getStarPath({ ctx, x, y, R, r, rotate = 0 }) {
+      ctx.beginPath();
+      const horn = 5;
+      const angle = 360 / horn;
+      for (let i = 0; i < horn; i++) {
+        ctx.lineTo(R * cos(18 + i * angle - rotate) + x, -R * sin(18 + i * angle - rotate) + y);
+        ctx.lineTo(r * cos(54 + i * angle - rotate) + x, -r * sin(54 + i * angle - rotate) + y);
+      }
+      ctx.closePath();
+    }
+    // 1.设置路径
+    // getStarPath({ ctx, x: 200, y: 200, R: 100, r: 50 });
+    getStarPath({ ctx, x: 100, y: 100, R: 100, r: 50, rotate: 0 });
+    // 2.设置状态
+    ctx.fillStyle = "#f00";
+    ctx.fill();
+    // 3.绘制
+    ctx.stroke();
+  </script>
+
+
+
+
+  <!-- <canvas id="straight"></canvas>
+  <script type="text/javascript">
+    window.onload = function () {
+      var canvas = document.getElementById('straight');
+      canvas.width = 800;
+      canvas.height = 800;
+      canvas.style.border = "1px solid #ddd";
+
+      var context = canvas.getContext('2d');
+
+      context.beginPath();
+      // function getStarPath({ctx, x, y,rotate =0}){
+      function getStarPath({ rotate = 0 }) {
+
+
+        for (var i = 0; i < 5; i++) {
+          context.lineTo(Math.cos((18 + i * 72 - rotate) / 180 * Math.PI) * 300 + 500, -Math.sin((18 + i * 72 - rotate) / 180 * Math.PI) * 300 + 500);
+          context.lineTo(Math.cos((54 + i * 72 - rotate) / 180 * Math.PI) * 150 + 500, -Math.sin((54 + i * 72 - rotate) / 180 * Math.PI) * 150 + 500);
+        }  //30 旋转弧度
+      }
+      getStarPath({ rotate: 10 })
+      context.closePath();
+      context.fillStyle = "#f00";
+      context.fill();
+      context.stroke();
+    }
+  </script> -->
+</body>
+
+</html>
