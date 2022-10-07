@@ -5,14 +5,38 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>平移缩放的demo</title>
+  <style>
+    .container {
+      border: 1px solid #ddd;
+      width: 1600px;
+      height: 900px;
+      box-sizing: content-box;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      background: rgb(242, 242, 243);
+      width: 1600px;
+      height: 900px;
+      cursor: grab;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <div id="scene" class="scene">
+      <canvas id="star" width="200" height="200"></canvas>
+      <canvas id="rectangle" width="100" height="100"></canvas>
+      <canvas id="circle" width="125" height="200"></canvas>
+      <!-- <div id="el">点我试试</div> -->
+    </div>
+  </div>
 
-  <canvas id="star" width="200" height="200"></canvas>
-  <canvas id="rectangle" width="100" height="100"></canvas>
-  <canvas id="circle" width="125" height="200"></canvas>
+  <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+  <!-- 绘制 -->
   <script>
     const canvasStar = document.querySelector("#star");
     const canvasRectangle = document.querySelector("#rectangle");
@@ -60,37 +84,51 @@
     // 3.绘制
     ctx.stroke();
   </script>
+  <!-- 操作 -->
+  <script>
+    var scene = document.querySelector('#scene')
+    var instance = panzoom(scene, {
+      maxZoom: 10,
+      minZoom: 1,
+      transformOrigin: { x: 0, y: 0 },
+      initialX: 0,
+      initialY: 0,
+      initialZoom: 1.5
+    })
 
-
-
-
-  <!-- <canvas id="straight"></canvas>
-  <script type="text/javascript">
-    window.onload = function () {
-      var canvas = document.getElementById('straight');
-      canvas.width = 800;
-      canvas.height = 800;
-      canvas.style.border = "1px solid #ddd";
-
-      var context = canvas.getContext('2d');
-
-      context.beginPath();
-      // function getStarPath({ctx, x, y,rotate =0}){
-      function getStarPath({ rotate = 0 }) {
-
-
-        for (var i = 0; i < 5; i++) {
-          context.lineTo(Math.cos((18 + i * 72 - rotate) / 180 * Math.PI) * 300 + 500, -Math.sin((18 + i * 72 - rotate) / 180 * Math.PI) * 300 + 500);
-          context.lineTo(Math.cos((54 + i * 72 - rotate) / 180 * Math.PI) * 150 + 500, -Math.sin((54 + i * 72 - rotate) / 180 * Math.PI) * 150 + 500);
-        }  //30 旋转弧度
+    function reset() {
+      const width = 1600
+      const height = 900
+      let obj = instance.getTransform()
+      // 左上角
+      if (obj.x > 0) {
+        instance.moveTo(0, obj.y);
       }
-      getStarPath({ rotate: 10 })
-      context.closePath();
-      context.fillStyle = "#f00";
-      context.fill();
-      context.stroke();
+      if (obj.y > 0) {
+        instance.moveTo(obj.x, 0);
+      }
+      // 右下角
+      if (obj.x < - width * (obj.scale - 1)) {
+        instance.moveTo(- width * (obj.scale - 1), obj.y);
+      }
+      if (obj.y < - height * (obj.scale - 1)) {
+        instance.moveTo(obj.x, - height * (obj.scale - 1));
+      }
+      // console.log(obj)
+
     }
-  </script> -->
+    // 平移或缩放
+    instance.on('transform', function (e) {
+      reset()
+    })
+
+    // 点击事件
+    var el = document.getElementById('el')
+    el.addEventListener('click', function (e) {
+      alert('点击事件')
+    })
+  </script>
+
 </body>
 
 </html>
